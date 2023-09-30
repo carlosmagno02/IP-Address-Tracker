@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <title>Frontend Mentor | IP Address Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="map/leaflet.css">
+</head>
+
+<body onload="getLocation()">
+  <section class="start">
+    <h1>
+      IP Address Tracker
+    </h1>
+    <div class="attribution">
+      Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+      Coded by <a href="https://github.com/carlosmagno02" target="_blank">Carlos Magno</a>.
+    </div>
+    <div class="input">
+      <input type="text" id="input-ip" placeholder="Search for any IP address or domain"> <button type="button"
+        onclick="getLocation()"><img src="images/icon-arrow.svg" alt=""></button>
+    </div>
+    <div class="data">
+      <div>
+        <h2>IP Address</h2>
+        <p id="data-ip">192.212.174.101</p>
+      </div>
+      <div>
+        <h2>Location</h2>
+        <p id="data-loc">Brookly,NY <br> 10001</p>
+      </div>
+      <div>
+        <h2>Timezone</h2>
+        <p id="data-time">UTC-05:00</p>
+      </div>
+      <div>
+        <h2>ISP</h2>
+        <p id="data-isp">SpaceX <br>Starlink</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="map"></div>
+
+
+
+
+  <script src="map/leaflet.js"></script>
+  <script>
+
+  </script>
+  <script>
+
+    map = L.map('map').setView([34.04915, -118.09462], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    var lat
+    var lng
+
+    async function getLocation() {
+      const ip = document.getElementById("input-ip").value;
+
+      const apiKey = 'at_qFYWWUGWuwo4TuWWM1Q0Ah6OmAgU9'
+      const api = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${ip}`
+
+      try {
+        const response = await fetch(api);
+        const data = await response.json();
+        const ip2 = data.ip;
+        const country = data.location.country;
+        const region = data.location.region;
+        const city = data.location.city;
+        const timezone = data.location.timezone;
+        const isp = data.isp;
+        lat = data.location.lat;
+        lng = data.location.lng;
+
+        document.getElementById('data-ip').innerHTML = ip2;
+        document.getElementById('data-loc').innerHTML = country + ', ' + region + ', ' + city;
+        document.getElementById('data-time').innerHTML = 'UTC' + timezone;
+        document.getElementById('data-isp').innerHTML = isp;
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
+
+      } catch (error) {
+        console.error("Erro ao buscar dados do IP:", error);
+      }
+
+
+      map.setView([lat, lng], 13)
+      var marker = L.marker([lat, lng]).addTo(map);
+
+    }
+
+
+
+  </script>
+</body>
+
+</html>
